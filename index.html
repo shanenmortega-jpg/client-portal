@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Approval Portal</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #F7F7F5;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid #E8E8E4;
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+    .logo span { color: #888; font-weight: 400; }
+
+    main { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+    .page-title { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+    .page-sub { font-size: 14px; color: #888; margin-bottom: 1.5rem; }
+
+    .filters {
+      display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 6px 16px; border-radius: 20px; font-size: 13px;
+      border: 1px solid #E0E0DB; background: #fff; color: #666;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .filter-btn.active {
+      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+    }
+
+    .cards { display: flex; flex-direction: column; gap: 16px; }
+
+    .card {
+      background: #fff;
+      border: 1px solid #E8E8E4;
+      border-radius: 14px;
+      padding: 1.5rem;
+      transition: box-shadow 0.15s;
+    }
+    .card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+    .card-title { font-size: 16px; font-weight: 600; }
+    .card-date { font-size: 12px; color: #999; white-space: nowrap; padding-top: 3px; }
+
+    .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .badge {
+      font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500;
+    }
+    .b-progress { background: #EBF3FF; color: #1A6BC4; }
+    .b-done { background: #EDFAF3; color: #1A8A50; }
+    .b-review { background: #FFF7E6; color: #B06A00; }
+    .b-default { background: #F3F3F0; color: #666; }
+
+    .card-desc { font-size: 14px; color: #555; line-height: 1.65; margin-bottom: 14px; }
+
+    .card-img { width: 100%; border-radius: 10px; margin-bottom: 14px; display: block; }
+
+    hr { border: none; border-top: 1px solid #F0F0EC; margin: 14px 0; }
+
+    .comment-label { font-size: 12px; color: #999; margin-bottom: 6px; }
+    textarea {
+      width: 100%; font-size: 13px; padding: 10px 12px;
+      border: 1px solid #E0E0DB; border-radius: 10px;
+      background: #FAFAF8; color: #1a1a1a;
+      resize: none; min-height: 64px;
+      font-family: inherit; line-height: 1.5;
+      transition: border-color 0.15s;
+    }
+    textarea:focus { outline: none; border-color: #aaa; background: #fff; }
+
+    .action-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
+    .btn {
+      padding: 8px 18px; font-size: 13px; border-radius: 10px;
+      cursor: pointer; font-family: inherit; font-weight: 500;
+      border: 1px solid; transition: all 0.15s;
+    }
+    .btn-approve { background: #EDFAF3; color: #1A8A50; border-color: #A8DFBF; }
+    .btn-approve:hover { background: #A8DFBF; }
+    .btn-changes { background: #FFF7E6; color: #B06A00; border-color: #F5CC7A; }
+    .btn-changes:hover { background: #F5CC7A; }
+
+    .result-banner {
+      display: flex; align-items: center; gap: 8px;
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 13px; font-weight: 500; margin-top: 10px;
+    }
+    .r-approved { background: #EDFAF3; color: #1A8A50; }
+    .r-changes { background: #FFF7E6; color: #B06A00; }
+
+    .loading { text-align: center; padding: 4rem 2rem; color: #999; font-size: 14px; }
+    .spinner {
+      width: 28px; height: 28px; border: 2px solid #E0E0DB;
+      border-top-color: #888; border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-box {
+      background: #FFF0F0; color: #C0392B; border: 1px solid #F5C6C6;
+      border-radius: 12px; padding: 1.25rem; font-size: 14px; line-height: 1.6;
+    }
+
+    .empty { text-align: center; padding: 3rem; color: #aaa; font-size: 14px; }
+
+    @media (max-width: 600px) {
+      main { padding: 1.25rem 1rem; }
+      .card { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Content Review <span>Portal</span></div>
+  <div style="font-size:12px; color:#aaa;" id="last-updated"></div>
+</header>
+
+<main>
+  <h1 class="page-title">Content for your review</h1>
+  <p class="page-sub" id="subtitle">Loading your content calendar...</p>
+
+  <div class="filters" id="filters" style="display:none">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="progress">In progress</button>
+    <button class="filter-btn" data-filter="done">Done</button>
+  </div>
+
+  <div class="cards" id="cards">
+    <div class="loading">
+      <div class="spinner"></div>
+      Fetching items from Notion...
+    </div>
+  </div>
+</main>
+
+<script>
+  let allItems = [];
+  let decisions = {};
+  let currentFilter = 'all';
+
+  function badgeClass(status) {
+    if (!status) return 'b-default';
+    const s = status.toLowerCase();
+    if (s.includes('progress')) return 'b-progress';
+    if (s.includes('done') || s.includes('complete')) return 'b-done';
+    if (s.includes('review')) return 'b-review';
+    return 'b-default';
+  }
+
+  function renderCards() {
+    const container = document.getElementById('cards');
+    const filtered = currentFilter === 'all' ? allItems
+      : currentFilter === 'progress' ? allItems.filter(i => (i.status||'').toLowerCase().includes('progress'))
+      : allItems.filter(i => {
+          const s = (i.status||'').toLowerCase();
+          return s.includes('done') || s.includes('complete');
+        });
+
+    if (!filtered.length) {
+      container.innerHTML = '<div class="empty">No items in this category.</div>';
+      return;
+    }
+
+    container.innerHTML = filtered.map(item => {
+      const dec = decisions[item.id];
+      const actionHTML = dec === 'approved'
+        ? `<div class="result-banner r-approved">✓ Approved</div>`
+        : dec === 'changes'
+        ? `<div class="result-banner r-changes">✎ Changes requested</div>`
+        : `<div class="action-row">
+            <button class="btn btn-changes" onclick="decide('${item.id}','changes')">Request changes</button>
+            <button class="btn btn-approve" onclick="decide('${item.id}','approved')">Approve ✓</button>
+          </div>`;
+
+      const imgHTML = item.images?.length
+        ? `<img class="card-img" src="${item.images[0]}" alt="${item.title}" onerror="this.style.display='none'">`
+        : '';
+
+      return `<div class="card">
+        <div class="card-header">
+          <div class="card-title">${item.title || 'Untitled'}</div>
+          ${item.date ? `<div class="card-date">📅 ${item.date}</div>` : ''}
+        </div>
+        <div class="badges">
+          ${item.status ? `<span class="badge ${badgeClass(item.status)}">${item.status}</span>` : ''}
+          ${item.type ? `<span class="badge b-default">${item.type}</span>` : ''}
+        </div>
+        ${imgHTML}
+        ${item.description ? `<div class="card-desc">${item.description}</div>` : ''}
+        <hr>
+        <div class="comment-label">Leave a comment</div>
+        <textarea id="c-${item.id}" placeholder="Any feedback or notes..."></textarea>
+        ${actionHTML}
+      </div>`;
+    }).join('');
+  }
+
+  window.decide = function(id, action) {
+    decisions[id] = action;
+    renderCards();
+  };
+
+  document.getElementById('filters').addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderCards();
+  });
+
+  async function init() {
+    try {
+      const res = await fetch('/api/notion');
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      allItems = data.items || [];
+      document.getElementById('subtitle').textContent = `${allItems.length} item${allItems.length !== 1 ? 's' : ''} ready for your review`;
+      document.getElementById('filters').style.display = 'flex';
+      document.getElementById('last-updated').textContent = 'Updated just now';
+      renderCards();
+    } catch(e) {
+      document.getElementById('subtitle').textContent = 'Could not load items';
+      document.getElementById('cards').innerHTML = `<div class="error-box">
+        <strong>Could not connect to Notion.</strong><br><br>
+        Make sure your environment variables are set correctly in Vercel:<br>
+        • NOTION_TOKEN<br>
+        • DATABASE_ID<br><br>
+        <small>Error: ${e.message}</small>
+      </div>`;
+    }
+  }
+
+  init();
+  setInterval(init, 60000);
+</script>
+</body>
+</html>
