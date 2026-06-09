@@ -244,10 +244,16 @@ Index · HTML
     }
   }
  
-  function decide(id, action) {
+  async function decide(id, action) {
     decisions[id] = action;
     renderModalActions(id);
     renderCalendar();
+    const comment = document.getElementById('modal-comment').value;
+    await fetch('/api/notion', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pageId: id, comment, decision: action })
+    });
   }
  
   function closeModal(e) { if (e.target === document.getElementById('modal-bg')) closeModalDirect(); }
