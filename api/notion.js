@@ -22,33 +22,23 @@ export default async function handler(req, res) {
 
     const items = (data.results || []).map(page => {
       const props = page.properties || {};
+      const titleKey = Object.keys(props).find(k => props[k].type === 'title') || 'Name';
 
-      const getTitle = (p) => p?.title?.[0]?.plain_text || p?.rich_text?.[0]?.plain_text || '';
-      const getSelect = (p) => p?.select?.name || '';
-      const getMultiSelect = (p) => (p?.multi_select || []).map(s => s.name).join(', ');
+      const getTitle = (p) => p?.title?.[0]?.plain_text || '';
       const getDate = (p) => {
         const d = p?.date?.start;
         if (!d) return '';
-        return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       };
-      const getRichText = (p) => p?.rich_text?.[0]?.plain_text || '';
-      const getFiles = (p) => (p?.files || []).map(f => f.file?.url || f.external?.url || '').filter(Boolean);
-
-      const titleKey = Object.keys(props).find(k => props[k].type === 'title') || 'Name';
-      const statusKey = Object.keys(props).find(k => k.toLowerCase().includes('status')) || '';
-      const typeKey = Object.keys(props).find(k => k.toLowerCase().includes('type') || k.toLowerCase().includes('format')) || '';
-      const dateKey = Object.keys(props).find(k => props[k].type === 'date') || '';
-      const descKey = Object.keys(props).find(k => k.toLowerCase().includes('desc') || k.toLowerCase().includes('copy') || k.toLowerCase().includes('caption') || k.toLowerCase().includes('note')) || '';
-      const imgKey = Object.keys(props).find(k => props[k].type === 'files') || '';
 
       return {
         id: page.id,
         title: getTitle(props[titleKey]),
-        status: statusKey ? (getSelect(props[statusKey]) || getMultiSelect(props[statusKey])) : '',
-        type: typeKey ? (getSelect(props[typeKey]) || getMultiSelect(props[typeKey])) : '',
-        date: dateKey ? getDate(props[dateKey]) : '',
-        description: descKey ? getRichText(props[descKey]) : '',
-        images: imgKey ? getFiles(props[imgKey]) : [],
+        status: props['Select']?.select?.name || '',
+        type: (props['Tags']?.multi_select || []).map(t => t.name).join(', '),
+        date: getDate(props['Date']),
+        description: '',
+        images: [],
         url: page.url
       };
     });
