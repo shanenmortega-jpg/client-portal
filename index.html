@@ -1,3 +1,6 @@
+
+raw
+Index · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,248 +9,266 @@
   <title>Content Approval Portal</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #F7F7F5;
-      color: #1a1a1a;
-      min-height: 100vh;
-    }
-
-    header {
-      background: #fff;
-      border-bottom: 1px solid #E8E8E4;
-      padding: 1.25rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .logo { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F7F7F5; color: #1a1a1a; min-height: 100vh; }
+ 
+    header { background: #fff; border-bottom: 1px solid #E8E8E4; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 15px; font-weight: 600; }
     .logo span { color: #888; font-weight: 400; }
-
-    main { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem; }
-
-    .page-title { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
-    .page-sub { font-size: 14px; color: #888; margin-bottom: 1.5rem; }
-
-    .filters {
-      display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap;
-    }
-    .filter-btn {
-      padding: 6px 16px; border-radius: 20px; font-size: 13px;
-      border: 1px solid #E0E0DB; background: #fff; color: #666;
-      cursor: pointer; transition: all 0.15s;
-    }
-    .filter-btn.active {
-      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
-    }
-
-    .cards { display: flex; flex-direction: column; gap: 16px; }
-
-    .card {
-      background: #fff;
-      border: 1px solid #E8E8E4;
-      border-radius: 14px;
-      padding: 1.5rem;
-      transition: box-shadow 0.15s;
-    }
-    .card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-
-    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
-    .card-title { font-size: 16px; font-weight: 600; }
-    .card-date { font-size: 12px; color: #999; white-space: nowrap; padding-top: 3px; }
-
-    .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-    .badge {
-      font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500;
-    }
+    .updated { font-size: 12px; color: #aaa; }
+ 
+    main { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+    h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    .sub { font-size: 14px; color: #888; margin-bottom: 1.5rem; }
+ 
+    .nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .nav-month { font-size: 16px; font-weight: 600; }
+    .nav-btns { display: flex; gap: 6px; }
+    .nav-btn { padding: 6px 14px; border-radius: 8px; border: 1px solid #E0E0DB; background: #fff; cursor: pointer; font-size: 13px; }
+    .nav-btn:hover { background: #F3F3F0; }
+ 
+    .calendar { background: #fff; border: 1px solid #E8E8E4; border-radius: 14px; overflow: hidden; }
+    .cal-header { display: grid; grid-template-columns: repeat(7, 1fr); border-bottom: 1px solid #E8E8E4; }
+    .cal-header div { padding: 10px 0; text-align: center; font-size: 12px; font-weight: 500; color: #888; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+    .cal-cell { min-height: 100px; padding: 8px; border-right: 1px solid #F0F0EC; border-bottom: 1px solid #F0F0EC; position: relative; vertical-align: top; }
+    .cal-cell:nth-child(7n) { border-right: none; }
+    .cal-day { font-size: 12px; color: #aaa; margin-bottom: 4px; }
+    .cal-day.today { background: #1a1a1a; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+    .cal-cell.other-month .cal-day { color: #ddd; }
+ 
+    .cal-item { background: #EBF3FF; border-left: 3px solid #1A6BC4; border-radius: 5px; padding: 4px 6px; margin-bottom: 4px; cursor: pointer; transition: all 0.15s; }
+    .cal-item:hover { background: #D0E8FF; }
+    .cal-item.done { background: #EDFAF3; border-left-color: #1A8A50; }
+    .cal-item-title { font-size: 11px; font-weight: 500; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cal-item-tag { font-size: 10px; color: #666; }
+ 
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-bg.open { display: flex; }
+    .modal { background: #fff; border-radius: 16px; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { padding: 1.5rem 1.5rem 0; display: flex; justify-content: space-between; align-items: flex-start; }
+    .modal-title { font-size: 20px; font-weight: 600; flex: 1; margin-right: 12px; }
+    .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: #aaa; padding: 0; line-height: 1; }
+    .modal-close:hover { color: #1a1a1a; }
+    .modal-meta { padding: 0.75rem 1.5rem; display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
     .b-progress { background: #EBF3FF; color: #1A6BC4; }
     .b-done { background: #EDFAF3; color: #1A8A50; }
-    .b-review { background: #FFF7E6; color: #B06A00; }
     .b-default { background: #F3F3F0; color: #666; }
-
-    .card-desc { font-size: 14px; color: #555; line-height: 1.65; margin-bottom: 14px; }
-
-    .card-img { width: 100%; border-radius: 10px; margin-bottom: 14px; display: block; }
-
-    hr { border: none; border-top: 1px solid #F0F0EC; margin: 14px 0; }
-
-    .comment-label { font-size: 12px; color: #999; margin-bottom: 6px; }
-    textarea {
-      width: 100%; font-size: 13px; padding: 10px 12px;
-      border: 1px solid #E0E0DB; border-radius: 10px;
-      background: #FAFAF8; color: #1a1a1a;
-      resize: none; min-height: 64px;
-      font-family: inherit; line-height: 1.5;
-      transition: border-color 0.15s;
-    }
-    textarea:focus { outline: none; border-color: #aaa; background: #fff; }
-
+    .modal-embed { margin: 0 1.5rem; border-radius: 10px; overflow: hidden; background: #F3F3F0; }
+    .modal-embed iframe { width: 100%; height: 400px; border: none; display: block; }
+    .modal-no-embed { padding: 3rem; text-align: center; color: #aaa; font-size: 14px; }
+    .modal-actions { padding: 1.25rem 1.5rem; border-top: 1px solid #F0F0EC; margin-top: 1.25rem; }
+    .comment-label { font-size: 12px; color: #888; margin-bottom: 6px; }
+    textarea { width: 100%; font-size: 13px; padding: 10px 12px; border: 1px solid #E0E0DB; border-radius: 10px; background: #FAFAF8; color: #1a1a1a; resize: none; min-height: 70px; font-family: inherit; }
+    textarea:focus { outline: none; border-color: #aaa; }
     .action-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
-    .btn {
-      padding: 8px 18px; font-size: 13px; border-radius: 10px;
-      cursor: pointer; font-family: inherit; font-weight: 500;
-      border: 1px solid; transition: all 0.15s;
-    }
+    .btn { padding: 9px 20px; font-size: 13px; border-radius: 10px; cursor: pointer; font-family: inherit; font-weight: 500; border: 1px solid; transition: all 0.15s; }
     .btn-approve { background: #EDFAF3; color: #1A8A50; border-color: #A8DFBF; }
     .btn-approve:hover { background: #A8DFBF; }
     .btn-changes { background: #FFF7E6; color: #B06A00; border-color: #F5CC7A; }
     .btn-changes:hover { background: #F5CC7A; }
-
-    .result-banner {
-      display: flex; align-items: center; gap: 8px;
-      border-radius: 10px; padding: 10px 14px;
-      font-size: 13px; font-weight: 500; margin-top: 10px;
-    }
+    .result-banner { display: flex; align-items: center; gap: 8px; border-radius: 10px; padding: 10px 14px; font-size: 13px; font-weight: 500; margin-top: 10px; }
     .r-approved { background: #EDFAF3; color: #1A8A50; }
     .r-changes { background: #FFF7E6; color: #B06A00; }
-
-    .loading { text-align: center; padding: 4rem 2rem; color: #999; font-size: 14px; }
-    .spinner {
-      width: 28px; height: 28px; border: 2px solid #E0E0DB;
-      border-top-color: #888; border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto 12px;
-    }
+ 
+    .loading { text-align: center; padding: 4rem; color: #aaa; font-size: 14px; }
+    .spinner { width: 28px; height: 28px; border: 2px solid #E0E0DB; border-top-color: #888; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    .error-box {
-      background: #FFF0F0; color: #C0392B; border: 1px solid #F5C6C6;
-      border-radius: 12px; padding: 1.25rem; font-size: 14px; line-height: 1.6;
-    }
-
-    .empty { text-align: center; padding: 3rem; color: #aaa; font-size: 14px; }
-
+ 
     @media (max-width: 600px) {
-      main { padding: 1.25rem 1rem; }
-      .card { padding: 1.25rem; }
+      .cal-cell { min-height: 60px; padding: 4px; }
+      .cal-item-tag { display: none; }
     }
   </style>
 </head>
 <body>
-
+ 
 <header>
   <div class="logo">Content Review <span>Portal</span></div>
-  <div style="font-size:12px; color:#aaa;" id="last-updated"></div>
+  <div class="updated" id="updated"></div>
 </header>
-
+ 
 <main>
-  <h1 class="page-title">Content for your review</h1>
-  <p class="page-sub" id="subtitle">Loading your content calendar...</p>
-
-  <div class="filters" id="filters" style="display:none">
-    <button class="filter-btn active" data-filter="all">All</button>
-    <button class="filter-btn" data-filter="progress">In progress</button>
-    <button class="filter-btn" data-filter="done">Done</button>
-  </div>
-
-  <div class="cards" id="cards">
-    <div class="loading">
-      <div class="spinner"></div>
-      Fetching items from Notion...
+  <h1>Content for your review</h1>
+  <p class="sub" id="subtitle">Loading your content calendar...</p>
+ 
+  <div class="nav">
+    <div class="nav-month" id="nav-month"></div>
+    <div class="nav-btns">
+      <button class="nav-btn" onclick="changeMonth(-1)">← Prev</button>
+      <button class="nav-btn" onclick="changeMonth(0)">Today</button>
+      <button class="nav-btn" onclick="changeMonth(1)">Next →</button>
     </div>
   </div>
+ 
+  <div id="calendar-wrap">
+    <div class="loading"><div class="spinner"></div>Fetching from Notion...</div>
+  </div>
 </main>
-
+ 
+<div class="modal-bg" id="modal-bg" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title"></div>
+      <button class="modal-close" onclick="closeModalDirect()">×</button>
+    </div>
+    <div class="modal-meta" id="modal-meta"></div>
+    <div class="modal-embed" id="modal-embed"></div>
+    <div class="modal-actions">
+      <div class="comment-label">Leave a comment</div>
+      <textarea id="modal-comment" placeholder="Any feedback or notes..."></textarea>
+      <div id="modal-action-area" class="action-row"></div>
+    </div>
+  </div>
+</div>
+ 
 <script>
   let allItems = [];
   let decisions = {};
-  let currentFilter = 'all';
-
-  function badgeClass(status) {
-    if (!status) return 'b-default';
-    const s = status.toLowerCase();
-    if (s.includes('progress')) return 'b-progress';
-    if (s.includes('done') || s.includes('complete')) return 'b-done';
-    if (s.includes('review')) return 'b-review';
-    return 'b-default';
+  let currentDate = new Date();
+  let currentYear = currentDate.getFullYear();
+  let currentMonth = currentDate.getMonth();
+  let activeItemId = null;
+ 
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+ 
+  async function fetchItems() {
+    const res = await fetch('/api/notion');
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    return data.items || [];
   }
-
-  function renderCards() {
-    const container = document.getElementById('cards');
-    const filtered = currentFilter === 'all' ? allItems
-      : currentFilter === 'progress' ? allItems.filter(i => (i.status||'').toLowerCase().includes('progress'))
-      : allItems.filter(i => {
-          const s = (i.status||'').toLowerCase();
-          return s.includes('done') || s.includes('complete');
-        });
-
-    if (!filtered.length) {
-      container.innerHTML = '<div class="empty">No items in this category.</div>';
-      return;
+ 
+  function renderCalendar() {
+    document.getElementById('nav-month').textContent = `${MONTHS[currentMonth]} ${currentYear}`;
+    const wrap = document.getElementById('calendar-wrap');
+ 
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const daysInPrev = new Date(currentYear, currentMonth, 0).getDate();
+    const today = new Date();
+ 
+    const itemsByDate = {};
+    allItems.forEach(item => {
+      if (!item.dateRaw) return;
+      const d = item.dateRaw.slice(0, 10);
+      if (!itemsByDate[d]) itemsByDate[d] = [];
+      itemsByDate[d].push(item);
+    });
+ 
+    let cells = '';
+    for (let i = 0; i < firstDay; i++) {
+      const day = daysInPrev - firstDay + i + 1;
+      cells += `<div class="cal-cell other-month"><div class="cal-day">${day}</div></div>`;
     }
-
-    container.innerHTML = filtered.map(item => {
-      const dec = decisions[item.id];
-      const actionHTML = dec === 'approved'
-        ? `<div class="result-banner r-approved">✓ Approved</div>`
-        : dec === 'changes'
-        ? `<div class="result-banner r-changes">✎ Changes requested</div>`
-        : `<div class="action-row">
-            <button class="btn btn-changes" onclick="decide('${item.id}','changes')">Request changes</button>
-            <button class="btn btn-approve" onclick="decide('${item.id}','approved')">Approve ✓</button>
-          </div>`;
-
-      const imgHTML = item.images?.length
-        ? `<img class="card-img" src="${item.images[0]}" alt="${item.title}" onerror="this.style.display='none'">`
-        : '';
-
-      return `<div class="card">
-        <div class="card-header">
-          <div class="card-title">${item.title || 'Untitled'}</div>
-          ${item.date ? `<div class="card-date">📅 ${item.date}</div>` : ''}
-        </div>
-        <div class="badges">
-          ${item.status ? `<span class="badge ${badgeClass(item.status)}">${item.status}</span>` : ''}
-          ${item.type ? `<span class="badge b-default">${item.type}</span>` : ''}
-        </div>
-        ${imgHTML}
-        ${item.description ? `<div class="card-desc">${item.description}</div>` : ''}
-        <hr>
-        <div class="comment-label">Leave a comment</div>
-        <textarea id="c-${item.id}" placeholder="Any feedback or notes..."></textarea>
-        ${actionHTML}
-      </div>`;
-    }).join('');
+ 
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const isToday = today.getFullYear() === currentYear && today.getMonth() === currentMonth && today.getDate() === d;
+      const dayItems = itemsByDate[dateStr] || [];
+ 
+      const dayHTML = isToday
+        ? `<div class="cal-day today">${d}</div>`
+        : `<div class="cal-day">${d}</div>`;
+ 
+      const itemsHTML = dayItems.map(item => {
+        const dec = decisions[item.id];
+        const doneClass = (item.status||'').toLowerCase().includes('done') || dec === 'approved' ? 'done' : '';
+        return `<div class="cal-item ${doneClass}" onclick="openModal('${item.id}')">
+          <div class="cal-item-title">${item.title || 'Untitled'}</div>
+          <div class="cal-item-tag">${item.type || ''}</div>
+        </div>`;
+      }).join('');
+ 
+      cells += `<div class="cal-cell"><div>${dayHTML}${itemsHTML}</div></div>`;
+    }
+ 
+    const totalCells = firstDay + daysInMonth;
+    const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+    for (let i = 1; i <= remaining; i++) {
+      cells += `<div class="cal-cell other-month"><div class="cal-day">${i}</div></div>`;
+    }
+ 
+    wrap.innerHTML = `<div class="calendar">
+      <div class="cal-header">${DAYS.map(d => `<div>${d}</div>`).join('')}</div>
+      <div class="cal-grid">${cells}</div>
+    </div>`;
   }
-
-  window.decide = function(id, action) {
+ 
+  function changeMonth(dir) {
+    if (dir === 0) { currentYear = new Date().getFullYear(); currentMonth = new Date().getMonth(); }
+    else { currentMonth += dir; if (currentMonth > 11) { currentMonth = 0; currentYear++; } if (currentMonth < 0) { currentMonth = 11; currentYear--; } }
+    renderCalendar();
+  }
+ 
+  function openModal(id) {
+    activeItemId = id;
+    const item = allItems.find(i => i.id === id);
+    if (!item) return;
+ 
+    document.getElementById('modal-title').textContent = item.title || 'Untitled';
+ 
+    const badgeClass = (item.status||'').toLowerCase().includes('progress') ? 'b-progress'
+      : (item.status||'').toLowerCase().includes('done') ? 'b-done' : 'b-default';
+    document.getElementById('modal-meta').innerHTML = `
+      ${item.status ? `<span class="badge ${badgeClass}">${item.status}</span>` : ''}
+      ${item.type ? `<span class="badge b-default">${item.type}</span>` : ''}
+      ${item.date ? `<span class="badge b-default">📅 ${item.date}</span>` : ''}
+    `;
+ 
+    const embedWrap = document.getElementById('modal-embed');
+    if (item.embedUrl) {
+      embedWrap.innerHTML = `<iframe src="${item.embedUrl}" allowfullscreen></iframe>`;
+    } else {
+      embedWrap.innerHTML = `<div class="modal-no-embed">No preview available</div>`;
+    }
+ 
+    document.getElementById('modal-comment').value = '';
+    renderModalActions(id);
+    document.getElementById('modal-bg').classList.add('open');
+  }
+ 
+  function renderModalActions(id) {
+    const dec = decisions[id];
+    const area = document.getElementById('modal-action-area');
+    if (dec === 'approved') {
+      area.innerHTML = `<div class="result-banner r-approved" style="width:100%">✓ Approved</div>`;
+    } else if (dec === 'changes') {
+      area.innerHTML = `<div class="result-banner r-changes" style="width:100%">✎ Changes requested</div>`;
+    } else {
+      area.innerHTML = `
+        <button class="btn btn-changes" onclick="decide('${id}','changes')">Request changes</button>
+        <button class="btn btn-approve" onclick="decide('${id}','approved')">Approve ✓</button>
+      `;
+    }
+  }
+ 
+  function decide(id, action) {
     decisions[id] = action;
-    renderCards();
-  };
-
-  document.getElementById('filters').addEventListener('click', e => {
-    const btn = e.target.closest('.filter-btn');
-    if (!btn) return;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentFilter = btn.dataset.filter;
-    renderCards();
-  });
-
+    renderModalActions(id);
+    renderCalendar();
+  }
+ 
+  function closeModal(e) { if (e.target === document.getElementById('modal-bg')) closeModalDirect(); }
+  function closeModalDirect() {
+    document.getElementById('modal-bg').classList.remove('open');
+    document.getElementById('modal-embed').innerHTML = '';
+    activeItemId = null;
+  }
+ 
   async function init() {
     try {
-      const res = await fetch('/api/notion');
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      allItems = data.items || [];
+      allItems = await fetchItems();
       document.getElementById('subtitle').textContent = `${allItems.length} item${allItems.length !== 1 ? 's' : ''} ready for your review`;
-      document.getElementById('filters').style.display = 'flex';
-      document.getElementById('last-updated').textContent = 'Updated just now';
-      renderCards();
+      document.getElementById('updated').textContent = 'Updated just now';
+      renderCalendar();
     } catch(e) {
       document.getElementById('subtitle').textContent = 'Could not load items';
-      document.getElementById('cards').innerHTML = `<div class="error-box">
-        <strong>Could not connect to Notion.</strong><br><br>
-        Make sure your environment variables are set correctly in Vercel:<br>
-        • NOTION_TOKEN<br>
-        • DATABASE_ID<br><br>
-        <small>Error: ${e.message}</small>
-      </div>`;
+      document.getElementById('calendar-wrap').innerHTML = `<div style="background:#FFF0F0;color:#C0392B;border-radius:12px;padding:1.25rem;font-size:14px">Could not connect to Notion. Error: ${e.message}</div>`;
     }
   }
-
+ 
   init();
   setInterval(init, 60000);
 </script>
