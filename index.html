@@ -229,7 +229,7 @@ Index · HTML
     document.getElementById('modal-bg').classList.add('open');
   }
  
-  function renderModalActions(id) {
+function renderModalActions(id) {
     const dec = decisions[id];
     const area = document.getElementById('modal-action-area');
     if (dec === 'approved') {
@@ -238,11 +238,13 @@ Index · HTML
       area.innerHTML = `<div class="result-banner r-changes" style="width:100%">✎ Changes requested</div>`;
     } else {
       area.innerHTML = `
+        <button class="btn" style="background:#F3F3F0;border-color:#E0E0DB;color:#444" onclick="sendComment('${id}')">Send comment</button>
         <button class="btn btn-changes" onclick="decide('${id}','changes')">Request changes</button>
         <button class="btn btn-approve" onclick="decide('${id}','approved')">Approve ✓</button>
       `;
     }
   }
+  
  async function decide(id, action) {
     decisions[id] = action;
     renderModalActions(id);
@@ -254,7 +256,17 @@ Index · HTML
       body: JSON.stringify({ pageId: id, comment, decision: action })
     });
   }
- 
+ async function sendComment(id) {
+    const comment = document.getElementById('modal-comment').value;
+    if (!comment.trim()) return;
+    await fetch('/api/notion', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pageId: id, comment })
+    });
+    document.getElementById('modal-comment').value = '';
+    alert('Comment sent!');
+  }
   function closeModal(e) { if (e.target === document.getElementById('modal-bg')) closeModalDirect(); }
   function closeModalDirect() {
     document.getElementById('modal-bg').classList.remove('open');
