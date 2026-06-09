@@ -13,6 +13,43 @@ export default async function handler(req, res) {
     'Content-Type': 'application/json'
   };
 
+  // POST - save comment or update status
+  if (req.method === 'POST') {
+    const { pageId, comment, decision } = req.body;
+    try {
+      // Update status in Notion
+      if (decision) {
+        await fetch(`https://api.notion.com/v1/pages/${pageId}`, {
+          method: 'PATCH',
+          headers,
+          body: JSON.stringify({
+            properties: {
+              'Select': { select: { name: decision === 'approved' ? 'Approved' : 'Changes requested' } }
+            }
+          })
+        });
+      }
+
+      // Post comment to Notion
+      if (comment && comment.trim()) {
+        await fetch(`https://api.notion.com/v1/comments`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            parent: { page_id: pageId },
+            rich_text: [{ type: 'text', text: { content: comment } }]
+          })
+        });
+      }
+
+      res.status(200).json({ success: true });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+    return;
+  }
+
+  // GET - fetch all items
   try {
     const dbRes = await fetch(`https://api.notion.com/v1/databases/${DATABASE_ID}/query`, {
       method: 'POST', headers, body: JSON.stringify({ page_size: 100 })
