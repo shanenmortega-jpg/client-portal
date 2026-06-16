@@ -24,7 +24,7 @@ export default async function handler(req, res) {
           headers,
           body: JSON.stringify({
             properties: {
-              'Select': { select: { name: decision === 'approved' ? 'Approved' : 'Changes requested' } }
+              'Select': { select: { name: decision === 'approved' ? 'Approved' : 'Request changes' } }
             }
           })
         });
