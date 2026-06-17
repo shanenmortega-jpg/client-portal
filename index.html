@@ -6,69 +6,69 @@
   <title>Content Approval Portal</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #f0f0f0; min-height: 100vh; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4ebd8; color: #3a2a1a; min-height: 100vh; }
 
-    header { background: #000; border-bottom: 1px solid #222; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
-    .logo img { height: 36px; width: auto; }
-    .updated { font-size: 12px; color: #666; }
+    header { background: #eaddc4; border-bottom: 1px solid #d9ccb0; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    .logo img { height: 48px; width: auto; }
+    .updated { font-size: 12px; color: #b59f8c; }
 
     main { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
-    h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; color: #fff; }
-    .sub { font-size: 14px; color: #666; margin-bottom: 1.5rem; }
+    h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; color: #3a2a1a; }
+    .sub { font-size: 14px; color: #b59f8c; margin-bottom: 1.5rem; }
 
     .nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-    .nav-month { font-size: 16px; font-weight: 600; color: #fff; }
+    .nav-month { font-size: 16px; font-weight: 600; color: #3a2a1a; }
     .nav-btns { display: flex; gap: 6px; }
-    .nav-btn { padding: 6px 14px; border-radius: 8px; border: 1px solid #333; background: #111; cursor: pointer; font-size: 13px; color: #f0f0f0; }
-    .nav-btn:hover { background: #FF00CC; border-color: #FF00CC; color: #fff; }
+    .nav-btn { padding: 6px 14px; border-radius: 8px; border: 1px solid #d9ccb0; background: #eaddc4; cursor: pointer; font-size: 13px; color: #3a2a1a; }
+    .nav-btn:hover { background: #c5a0e3; border-color: #c5a0e3; color: #fff; }
 
-    .calendar { background: #111; border: 1px solid #222; border-radius: 14px; overflow: hidden; }
-    .cal-header { display: grid; grid-template-columns: repeat(7, 1fr); border-bottom: 1px solid #222; }
-    .cal-header div { padding: 10px 0; text-align: center; font-size: 12px; font-weight: 500; color: #666; }
+    .calendar { background: #fdf7ee; border: 1px solid #d9ccb0; border-radius: 14px; overflow: hidden; }
+    .cal-header { display: grid; grid-template-columns: repeat(7, 1fr); border-bottom: 1px solid #d9ccb0; }
+    .cal-header div { padding: 10px 0; text-align: center; font-size: 12px; font-weight: 500; color: #b59f8c; }
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
-    .cal-cell { min-height: 100px; padding: 8px; border-right: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a; position: relative; vertical-align: top; }
+    .cal-cell { min-height: 100px; padding: 8px; border-right: 1px solid #ede3d0; border-bottom: 1px solid #ede3d0; position: relative; vertical-align: top; }
     .cal-cell:nth-child(7n) { border-right: none; }
-    .cal-day { font-size: 12px; color: #555; margin-bottom: 4px; }
-    .cal-day.today { background: #FF00CC; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; }
-    .cal-cell.other-month .cal-day { color: #333; }
+    .cal-day { font-size: 12px; color: #b59f8c; margin-bottom: 4px; }
+    .cal-day.today { background: #c5a0e3; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+    .cal-cell.other-month .cal-day { color: #d9ccb0; }
 
-    .cal-item { background: #1a0a1a; border-left: 3px solid #FF00CC; border-radius: 5px; padding: 4px 6px; margin-bottom: 4px; cursor: pointer; transition: all 0.15s; }
-    .cal-item:hover { background: #2a0a2a; }
-    .cal-item.done { background: #0a1a0a; border-left-color: #FF9900; }
-    .cal-item-title { font-size: 11px; font-weight: 500; color: #f0f0f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .cal-item-tag { font-size: 10px; color: #888; }
+    .cal-item { background: #ede3f7; border-left: 3px solid #c5a0e3; border-radius: 5px; padding: 4px 6px; margin-bottom: 4px; cursor: pointer; transition: all 0.15s; }
+    .cal-item:hover { background: #dbc8f0; }
+    .cal-item.done { background: #e0eed8; border-left-color: #b7cea9; }
+    .cal-item-title { font-size: 11px; font-weight: 500; color: #3a2a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cal-item-tag { font-size: 10px; color: #b59f8c; }
 
-    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(58,42,26,0.4); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
     .modal-bg.open { display: flex; }
-    .modal { background: #111; border: 1px solid #222; border-radius: 16px; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; }
+    .modal { background: #fdf7ee; border: 1px solid #d9ccb0; border-radius: 16px; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; }
     .modal-header { padding: 1.5rem 1.5rem 0; display: flex; justify-content: space-between; align-items: flex-start; }
-    .modal-title { font-size: 20px; font-weight: 600; flex: 1; margin-right: 12px; color: #fff; }
-    .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: #555; padding: 0; line-height: 1; }
-    .modal-close:hover { color: #FF00CC; }
+    .modal-title { font-size: 20px; font-weight: 600; flex: 1; margin-right: 12px; color: #3a2a1a; }
+    .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: #b59f8c; padding: 0; line-height: 1; }
+    .modal-close:hover { color: #c5a0e3; }
     .modal-meta { padding: 0.75rem 1.5rem; display: flex; gap: 8px; flex-wrap: wrap; }
     .badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
-    .b-progress { background: #1a0a1a; color: #FF00CC; }
-    .b-done { background: #1a0f00; color: #FF9900; }
-    .b-default { background: #1a1a1a; color: #888; }
-    .modal-embed { margin: 0 1.5rem; border-radius: 10px; overflow: hidden; background: #1a1a1a; }
+    .b-progress { background: #ede3f7; color: #c5a0e3; }
+    .b-done { background: #e0eed8; color: #b7cea9; }
+    .b-default { background: #eaddc4; color: #b59f8c; }
+    .modal-embed { margin: 0 1.5rem; border-radius: 10px; overflow: hidden; background: #eaddc4; }
     .modal-embed iframe { width: 100%; height: 400px; border: none; display: block; }
-    .modal-no-embed { padding: 3rem; text-align: center; color: #555; font-size: 14px; }
-    .modal-actions { padding: 1.25rem 1.5rem; border-top: 1px solid #222; margin-top: 1.25rem; }
-    .comment-label { font-size: 12px; color: #666; margin-bottom: 6px; }
-    textarea { width: 100%; font-size: 13px; padding: 10px 12px; border: 1px solid #333; border-radius: 10px; background: #1a1a1a; color: #f0f0f0; resize: none; min-height: 70px; font-family: inherit; }
-    textarea:focus { outline: none; border-color: #FF00CC; }
+    .modal-no-embed { padding: 3rem; text-align: center; color: #b59f8c; font-size: 14px; }
+    .modal-actions { padding: 1.25rem 1.5rem; border-top: 1px solid #d9ccb0; margin-top: 1.25rem; }
+    .comment-label { font-size: 12px; color: #b59f8c; margin-bottom: 6px; }
+    textarea { width: 100%; font-size: 13px; padding: 10px 12px; border: 1px solid #d9ccb0; border-radius: 10px; background: #f4ebd8; color: #3a2a1a; resize: none; min-height: 70px; font-family: inherit; }
+    textarea:focus { outline: none; border-color: #c5a0e3; }
     .action-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
     .btn { padding: 9px 20px; font-size: 13px; border-radius: 10px; cursor: pointer; font-family: inherit; font-weight: 500; border: 1px solid; transition: all 0.15s; }
-    .btn-approve { background: #1a0f00; color: #FF9900; border-color: #FF9900; }
-    .btn-approve:hover { background: #FF9900; color: #000; }
-    .btn-changes { background: #1a0a1a; color: #FF00CC; border-color: #FF00CC; }
-    .btn-changes:hover { background: #FF00CC; color: #fff; }
+    .btn-approve { background: #e0eed8; color: #5a8a50; border-color: #b7cea9; }
+    .btn-approve:hover { background: #b7cea9; color: #fff; }
+    .btn-changes { background: #ede3f7; color: #8a50b0; border-color: #c5a0e3; }
+    .btn-changes:hover { background: #c5a0e3; color: #fff; }
     .result-banner { display: flex; align-items: center; gap: 8px; border-radius: 10px; padding: 10px 14px; font-size: 13px; font-weight: 500; margin-top: 10px; }
-    .r-approved { background: #1a0f00; color: #FF9900; }
-    .r-changes { background: #1a0a1a; color: #FF00CC; }
+    .r-approved { background: #e0eed8; color: #5a8a50; }
+    .r-changes { background: #ede3f7; color: #8a50b0; }
 
-    .loading { text-align: center; padding: 4rem; color: #555; font-size: 14px; }
-    .spinner { width: 28px; height: 28px; border: 2px solid #333; border-top-color: #FF00CC; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+    .loading { text-align: center; padding: 4rem; color: #b59f8c; font-size: 14px; }
+    .spinner { width: 28px; height: 28px; border: 2px solid #d9ccb0; border-top-color: #c5a0e3; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     @media (max-width: 600px) {
@@ -80,7 +80,7 @@
 <body>
 
 <header>
-  <div class="logo"><img src="./VD Logo.png" alt="Visions Delivered" /></div>
+  <div class="logo"><img src="./ON LOGO.png" alt="Oatmeal's Naturals" /></div>
   <div class="updated" id="updated"></div>
 </header>
 
@@ -234,7 +234,7 @@
       area.innerHTML = `<div class="result-banner r-changes" style="width:100%">✎ Changes requested</div>`;
     } else {
       area.innerHTML = `
-        <button class="btn" style="background:#1a1a1a;border-color:#333;color:#aaa" onclick="sendComment('${id}')">Send comment</button>
+        <button class="btn" style="background:#eaddc4;border-color:#d9ccb0;color:#b59f8c" onclick="sendComment('${id}')">Send comment</button>
         <button class="btn btn-changes" onclick="decide('${id}','changes')">Request changes</button>
         <button class="btn btn-approve" onclick="decide('${id}','approved')">Approve ✓</button>
       `;
@@ -280,7 +280,7 @@
       renderCalendar();
     } catch(e) {
       document.getElementById('subtitle').textContent = 'Could not load items';
-      document.getElementById('calendar-wrap').innerHTML = `<div style="background:#1a0a0a;color:#FF00CC;border-radius:12px;padding:1.25rem;font-size:14px">Could not connect to Notion. Error: ${e.message}</div>`;
+      document.getElementById('calendar-wrap').innerHTML = `<div style="background:#ede3f7;color:#8a50b0;border-radius:12px;padding:1.25rem;font-size:14px">Could not connect to Notion. Error: ${e.message}</div>`;
     }
   }
 
